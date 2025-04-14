@@ -18,7 +18,11 @@
         actionDelay: 300,          // Delay between actions
         initDelay: 1500,           // Delay before initializing the script (only modify if Twitter/X is slow to load)
         debug: true,               // Enable console logs
-        maxRetries: 3              // Maximum retries for finding elements
+        maxRetries: 3,             // Maximum retries for finding elements
+        scroll: {
+            enabled: false,        // Enable auto-scrolling
+            speed: 100,            // Pixels per scroll tick
+        }
     };
 
     const log = (message, isWarning = false) => {
@@ -30,6 +34,22 @@
                 console.log(`${prefix} ${message}`);
             }
         }
+    };
+
+    let scrollInterval = null;
+
+    const toggleScroll = () => {
+        if (scrollInterval) {
+            clearInterval(scrollInterval);
+            scrollInterval = null;
+            log('Auto-scroll disabled');
+            return;
+        }
+
+        log('Auto-scroll enabled');
+        scrollInterval = setInterval(() => {
+            window.scrollBy(0, config.scroll.speed);
+        }, 50);
     };
 
     const waitForElement = (selector, timeout = 3000, retries = config.maxRetries) => {
@@ -200,6 +220,18 @@
         log('X-Buster initialized');
         processAdTweets();
         setInterval(processAdTweets, config.blockCheckInterval);
+
+        if (config.scroll.enabled) {
+            toggleScroll();
+        }
+
+        // keyboard shortcut to toggle scroll (press 's')
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 's') {
+                config.scroll.enabled = !config.scroll.enabled;
+                toggleScroll();
+            }
+        });
     };
 
     if (document.readyState === 'loading') {
