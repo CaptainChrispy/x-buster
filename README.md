@@ -16,9 +16,13 @@ You can customize the script by modifying the `config` object in `script.js`:
 const config = {
     blockCheckInterval: 1000,  // Scan frequency in milliseconds
     actionDelay: 300,          // Delay between actions
-    initDelay: 1500,           // Delay before initializing the script
+    initDelay: 1500,           // Delay before initializing the script (only modify if Twitter/X is slow to load)
     debug: true,               // Enable console logs
-    maxRetries: 3              // Maximum retries for finding elements
+    maxRetries: 3,             // Maximum retries for finding elements
+    scroll: {
+        enabled: false,        // Enable auto-scrolling
+        speed: 100,            // Pixels per scroll tick
+    }
 };
 ```
 
@@ -26,5 +30,12 @@ const config = {
 Once installed and enabled, the script will automatically:
 1. Detect tweets marked as ads in your Twitter/X feed.
 2. Block the accounts posting these ads.
+3. Auto-scroll through your feed (if enabled)
+
+### Auto-Scroll Controls
+- Press 'S' to toggle auto-scrolling on/off
+- Adjust scroll settings in the config:
+  - `enabled`: Turn auto-scroll on/off by default
+  - `speed`: The number of pixels to scroll per tick (higher = faster)
 
 The script runs in the background and requires no manual intervention. It's that easy! 
