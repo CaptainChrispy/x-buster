@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/banner.png" alt="X-Buster Banner">
+</div>
+
 # X-Buster: The Twitter/X Ad Account Blocker
 
 ## Overview
