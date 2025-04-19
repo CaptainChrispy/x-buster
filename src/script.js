@@ -292,14 +292,6 @@
         if (config.scroll.enabled) {
             toggleScroll();
         }
-
-        // keyboard shortcut to toggle scroll (press 's')
-        document.addEventListener('keydown', (e) => {
-            if (e.key.toLowerCase() === 's') {
-                const toggleButton = document.getElementById('x-buster-toggle');
-                if (toggleButton) toggleButton.click();
-            }
-        });
     };
 
     if (document.readyState === 'loading') {
