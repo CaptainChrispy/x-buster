@@ -216,10 +216,78 @@
         }
     };
 
+    const createToggleButton = () => {
+        const container = document.createElement('div');
+        container.id = 'x-buster-toggle';
+        container.style.cssText = `
+            position: fixed;
+            bottom: 60px;
+            right: 20px;
+            background-color: rgba(29, 155, 240, 0.9);
+            border-radius: 30px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        `;
+
+        const label = document.createElement('span');
+        label.textContent = 'Auto-scroll';
+        label.style.cssText = `
+            margin-right: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        `;
+
+        const toggleSwitch = document.createElement('div');
+        toggleSwitch.style.cssText = `
+            width: 42px;
+            height: 22px;
+            background-color: ${config.scroll.enabled ? '#1a8cd8' : '#657786'};
+            border-radius: 11px;
+            position: relative;
+            transition: background-color 0.2s ease;
+        `;
+
+        const toggleKnob = document.createElement('div');
+        toggleKnob.style.cssText = `
+            width: 18px;
+            height: 18px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: ${config.scroll.enabled ? '22px' : '2px'};
+            transition: left 0.2s ease;
+        `;
+
+        toggleSwitch.appendChild(toggleKnob);
+        container.appendChild(label);
+        container.appendChild(toggleSwitch);
+
+        container.addEventListener('click', () => {
+            config.scroll.enabled = !config.scroll.enabled;
+            toggleScroll();
+            toggleSwitch.style.backgroundColor = config.scroll.enabled ? '#1a8cd8' : '#657786';
+            toggleKnob.style.left = config.scroll.enabled ? '22px' : '2px';
+        });
+
+        document.body.appendChild(container);
+        
+        return container;
+    };
+
     const initAdBlocker = () => {
         log('X-Buster initialized');
         processAdTweets();
         setInterval(processAdTweets, config.blockCheckInterval);
+
+        createToggleButton();
 
         if (config.scroll.enabled) {
             toggleScroll();
@@ -228,8 +296,8 @@
         // keyboard shortcut to toggle scroll (press 's')
         document.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === 's') {
-                config.scroll.enabled = !config.scroll.enabled;
-                toggleScroll();
+                const toggleButton = document.getElementById('x-buster-toggle');
+                if (toggleButton) toggleButton.click();
             }
         });
     };
