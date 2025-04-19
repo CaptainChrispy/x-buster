@@ -37,7 +37,7 @@ Once installed and enabled, the script will automatically:
 3. Auto-scroll through your feed (if enabled)
 
 ### Auto-Scroll Controls
-- Press 'S' to toggle auto-scrolling on/off
+- Click the **Auto-scroll** toggle button in the bottom-right corner to enable/disable scrolling
 - Adjust scroll settings in the config:
   - `enabled`: Turn auto-scroll on/off by default
   - `speed`: The number of pixels to scroll per tick (higher = faster)
