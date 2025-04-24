@@ -244,15 +244,21 @@
             font-weight: bold;
         `;
 
+        const COLORS = {
+            ON: '#32cd32', 
+            OFF: '#2F3336' 
+        };
+
         const toggleSwitch = document.createElement('div');
         toggleSwitch.style.cssText = `
             width: 42px;
             height: 22px;
-            background-color: ${config.scroll.enabled ? '#1a8cd8' : '#657786'};
             border-radius: 11px;
             position: relative;
             transition: background-color 0.2s ease;
         `;
+        
+        toggleSwitch.style.backgroundColor = config.scroll.enabled ? COLORS.ON : COLORS.OFF;
 
         const toggleKnob = document.createElement('div');
         toggleKnob.style.cssText = `
@@ -273,7 +279,7 @@
         container.addEventListener('click', () => {
             config.scroll.enabled = !config.scroll.enabled;
             toggleScroll();
-            toggleSwitch.style.backgroundColor = config.scroll.enabled ? '#1a8cd8' : '#657786';
+            toggleSwitch.style.backgroundColor = config.scroll.enabled ? COLORS.ON : COLORS.OFF;
             toggleKnob.style.left = config.scroll.enabled ? '22px' : '2px';
         });
 
