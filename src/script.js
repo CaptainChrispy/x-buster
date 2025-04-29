@@ -22,6 +22,9 @@
         scroll: {
             enabled: false,        // Enable auto-scrolling
             speed: 100,            // Pixels per scroll tick
+            resetMethod: 'home',   // 'home' or 'refresh'
+            checkInterval: 3000,   // How often to check if scrolling is stuck (ms)
+            stuckThreshold: 500    // Consider stuck if less than this many pixels scrolled
         }
     };
 
@@ -42,14 +45,67 @@
         if (scrollInterval) {
             clearInterval(scrollInterval);
             scrollInterval = null;
+            
+            // Also clear the stuck detection interval if it exists
+            if (window.stuckDetectionInterval) {
+                clearInterval(window.stuckDetectionInterval);
+                window.stuckDetectionInterval = null;
+            }
+            
             log('Auto-scroll disabled');
             return;
         }
 
         log('Auto-scroll enabled');
+        
+        // Track last scroll position to detect when we're stuck
+        let lastScrollY = window.scrollY;
+        let stuckCount = 0;
+        
+        // Start scrolling
         scrollInterval = setInterval(() => {
             window.scrollBy(0, config.scroll.speed);
         }, 50);
+        
+        // Start monitoring for stuck scrolling
+        window.stuckDetectionInterval = setInterval(() => {
+            // If we haven't moved much since last check
+            if (Math.abs(window.scrollY - lastScrollY) < config.scroll.stuckThreshold) {
+                stuckCount++;
+                
+                // If we've been stuck for multiple checks, reset
+                if (stuckCount >= 2) {
+                    log('Scroll appears to be rate-limited, resetting...');
+                    resetScroll();
+                    stuckCount = 0;
+                }
+            } else {
+                // We're still moving, reset the counter
+                stuckCount = 0;
+            }
+            
+            // Update the last position
+            lastScrollY = window.scrollY;
+        }, config.scroll.checkInterval);
+    };
+
+    const resetScroll = () => {
+        // Method 1: Click home button
+        if (config.scroll.resetMethod === 'home') {
+            const homeButton = document.querySelector('a[href="/home"]') || 
+                               document.querySelector('a[aria-label="Home"]') ||
+                               document.querySelector('a[data-testid="AppTabBar_Home_Link"]');
+            
+            if (homeButton) {
+                log('Clicking home button to reset scroll');
+                simulateClick(homeButton);
+                return;
+            }
+        }
+        
+        // Method 2: Refresh the page
+        log('Refreshing page to reset scroll');
+        window.location.reload();
     };
 
     const waitForElement = (selector, timeout = 3000, retries = config.maxRetries) => {
