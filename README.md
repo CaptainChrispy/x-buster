@@ -26,7 +26,7 @@ const config = {
     scroll: {
         enabled: false,        // Enable auto-scrolling
         speed: 100,            // Pixels per scroll tick
-        resetMethod: 'home',   // 'home' or 'refresh'
+        resetMethod: 'home',   // 'home', 'refresh', or 'none'
         checkInterval: 3000,   // How often to check if scrolling is stuck (ms)
         stuckThreshold: 500    // Consider stuck if less than this many pixels scrolled
     }
@@ -47,6 +47,7 @@ Once installed and enabled, the script will automatically:
   - `resetMethod`: Choose how to reset scrolling when stuck
      - `home`: Click the Home button and return to the top of the feed (default)
      - `refresh`: Refresh the page to reset scrolling
+     - `none`: Do not reset scrolling
   - `checkInterval`: How often to check if scrolling is stuck (in milliseconds)
   - `stuckThreshold`: Consider scrolling stuck if moved less than this many pixels since the last check
 
