@@ -22,7 +22,7 @@
         scroll: {
             enabled: false,        // Enable auto-scrolling
             speed: 100,            // Pixels per scroll tick
-            resetMethod: 'home',   // 'home' or 'refresh'
+            resetMethod: 'home',   // 'home', 'refresh', or 'none'
             checkInterval: 3000,   // How often to check if scrolling is stuck (ms)
             stuckThreshold: 500    // Consider stuck if less than this many pixels scrolled
         }
@@ -69,6 +69,11 @@
         
         // Start monitoring for stuck scrolling
         window.stuckDetectionInterval = setInterval(() => {
+            // If reset is disabled with 'none' option, don't check for stuck scrolling
+            if (config.scroll.resetMethod === 'none') {
+                return;
+            }
+
             // If we haven't moved much since last check
             if (Math.abs(window.scrollY - lastScrollY) < config.scroll.stuckThreshold) {
                 stuckCount++;
@@ -90,6 +95,11 @@
     };
 
     const resetScroll = () => {
+        // If reset is disabled with 'none' option, don't check for stuck scrolling
+        if (config.scroll.resetMethod === 'none') {
+            return;
+        }
+        
         // Method 1: Click home button
         if (config.scroll.resetMethod === 'home') {
             const homeButton = document.querySelector('a[href="/home"]') || 
