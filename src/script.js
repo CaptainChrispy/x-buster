@@ -408,16 +408,6 @@
         resetSelector.addEventListener('change', (e) => {
             config.scroll.resetMethod = e.target.value;
             log(`Reset method changed to: ${config.scroll.resetMethod}`);
-            
-            // If we're already scrolling, apply the changes immediately
-            if (scrollInterval) {
-                // Clear existing intervals and restart with new settings
-                clearInterval(scrollInterval);
-                if (window.stuckDetectionInterval) {
-                    clearInterval(window.stuckDetectionInterval);
-                }
-                toggleScroll();
-            }
         });
     
         container.appendChild(scrollLabel);
