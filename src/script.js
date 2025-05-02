@@ -284,7 +284,7 @@
 
     const createToggleButton = () => {
         const container = document.createElement('div');
-        container.id = 'x-buster-toggle';
+        container.id = 'x-buster-controls';
         container.style.cssText = `
             position: fixed;
             bottom: 60px;
@@ -298,23 +298,24 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: white;
-            cursor: pointer;
             transition: background-color 0.2s ease;
         `;
-
-        const label = document.createElement('span');
-        label.textContent = 'Auto-scroll';
-        label.style.cssText = `
+    
+        // Auto-scroll label
+        const scrollLabel = document.createElement('span');
+        scrollLabel.textContent = 'Auto-scroll';
+        scrollLabel.style.cssText = `
             margin-right: 10px;
             font-size: 14px;
             font-weight: bold;
         `;
-
+    
         const COLORS = {
             ON: '#32cd32', 
             OFF: '#2F3336' 
         };
-
+    
+        // Toggle switch for auto-scroll
         const toggleSwitch = document.createElement('div');
         toggleSwitch.style.cssText = `
             width: 42px;
@@ -322,10 +323,12 @@
             border-radius: 11px;
             position: relative;
             transition: background-color 0.2s ease;
+            cursor: pointer;
+            margin-right: 15px;
         `;
         
         toggleSwitch.style.backgroundColor = config.scroll.enabled ? COLORS.ON : COLORS.OFF;
-
+    
         const toggleKnob = document.createElement('div');
         toggleKnob.style.cssText = `
             width: 18px;
@@ -337,18 +340,93 @@
             left: ${config.scroll.enabled ? '22px' : '2px'};
             transition: left 0.2s ease;
         `;
-
+    
         toggleSwitch.appendChild(toggleKnob);
-        container.appendChild(label);
-        container.appendChild(toggleSwitch);
-
-        container.addEventListener('click', () => {
+        
+        // Divider between controls
+        const divider = document.createElement('div');
+        divider.style.cssText = `
+            height: 22px;
+            width: 1px;
+            background-color: rgba(255, 255, 255, 0.4);
+            margin: 0 15px 0 0;
+        `;
+    
+        // Reset method selector
+        const resetLabel = document.createElement('span');
+        resetLabel.textContent = 'Reset:';
+        resetLabel.style.cssText = `
+            margin-right: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        `;
+    
+        const resetSelector = document.createElement('select');
+        resetSelector.style.cssText = `
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 3px 8px;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        `;
+        const dropdownStyleSheet = document.createElement('style');
+        dropdownStyleSheet.textContent = `
+            #x-buster-controls select option {
+                background-color: #15202b;
+                color: white;
+            }
+        `;
+    
+        const options = [
+            { value: 'home', text: 'Home' },
+            { value: 'refresh', text: 'Refresh' },
+            { value: 'none', text: 'None' }
+        ];
+    
+        options.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option.value;
+            optionElement.textContent = option.text;
+            if (option.value === config.scroll.resetMethod) {
+                optionElement.selected = true;
+            }
+            resetSelector.appendChild(optionElement);
+        });
+    
+        toggleSwitch.addEventListener('click', () => {
             config.scroll.enabled = !config.scroll.enabled;
             toggleScroll();
             toggleSwitch.style.backgroundColor = config.scroll.enabled ? COLORS.ON : COLORS.OFF;
             toggleKnob.style.left = config.scroll.enabled ? '22px' : '2px';
         });
-
+    
+        resetSelector.addEventListener('change', (e) => {
+            config.scroll.resetMethod = e.target.value;
+            log(`Reset method changed to: ${config.scroll.resetMethod}`);
+            
+            // If we're already scrolling, apply the changes immediately
+            if (scrollInterval) {
+                // Clear existing intervals and restart with new settings
+                clearInterval(scrollInterval);
+                if (window.stuckDetectionInterval) {
+                    clearInterval(window.stuckDetectionInterval);
+                }
+                toggleScroll();
+            }
+        });
+    
+        container.appendChild(scrollLabel);
+        container.appendChild(toggleSwitch);
+        container.appendChild(divider);
+        container.appendChild(resetLabel);
+        container.appendChild(resetSelector);
+        document.head.appendChild(dropdownStyleSheet);
+    
         document.body.appendChild(container);
         
         return container;
