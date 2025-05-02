@@ -282,6 +282,41 @@
         }
     };
 
+    const saveSettings = () => {
+        const settings = {
+            scroll: {
+                enabled: config.scroll.enabled,
+                resetMethod: config.scroll.resetMethod
+            }
+        };
+        try {
+            localStorage.setItem('x-buster-settings', JSON.stringify(settings));
+            log('Settings saved');
+        } catch (e) {
+            log('Failed to save settings: ' + e.message, true);
+        }
+    };
+    
+    const loadSettings = () => {
+        try {
+            const savedSettings = localStorage.getItem('x-buster-settings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                if (settings.scroll) {
+                    if (settings.scroll.enabled !== undefined) {
+                        config.scroll.enabled = settings.scroll.enabled;
+                    }
+                    if (settings.scroll.resetMethod) {
+                        config.scroll.resetMethod = settings.scroll.resetMethod;
+                    }
+                }
+                log('Settings loaded from storage');
+            }
+        } catch (e) {
+            log('Failed to load settings: ' + e.message, true);
+        }
+    };
+
     const createToggleButton = () => {
         const container = document.createElement('div');
         container.id = 'x-buster-controls';
@@ -403,11 +438,13 @@
             toggleScroll();
             toggleSwitch.style.backgroundColor = config.scroll.enabled ? COLORS.ON : COLORS.OFF;
             toggleKnob.style.left = config.scroll.enabled ? '22px' : '2px';
+            saveSettings();
         });
     
         resetSelector.addEventListener('change', (e) => {
             config.scroll.resetMethod = e.target.value;
             log(`Reset method changed to: ${config.scroll.resetMethod}`);
+            saveSettings();
         });
     
         container.appendChild(scrollLabel);
@@ -423,6 +460,7 @@
     };
 
     const initAdBlocker = () => {
+        loadSettings();
         log('X-Buster initialized');
         processAdTweets();
         setInterval(processAdTweets, config.blockCheckInterval);
