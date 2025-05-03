@@ -282,6 +282,34 @@
         }
     };
 
+    const detectThemeColor = () => {
+        const themeColorElements = [
+            ...document.querySelectorAll('[style*="background-color: rgb"]'),
+            ...document.querySelectorAll('[style*="color: rgb"]')
+        ];
+        
+        // Pattern to match RGB colors
+        const rgbPattern = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
+        
+        for (const element of themeColorElements) {
+            const style = element.getAttribute('style');
+            const match = style.match(rgbPattern);
+            
+            if (match) {
+                const [_, r, g, b] = match.map(Number);
+                
+                // Skip grayscale colors (where R, G, and B are close in value)
+                const range = Math.max(Math.abs(r-g), Math.abs(r-b), Math.abs(g-b));
+                if (range > 50) { // If there's significant color variation (not gray)
+                    return `rgb(${r}, ${g}, ${b})`;
+                }
+            }
+        }
+        
+        // Default Twitter blue if no theme color found
+        return 'rgb(29, 155, 240)';
+    };
+
     const saveSettings = () => {
         const settings = {
             scroll: {
@@ -318,13 +346,15 @@
     };
 
     const createToggleButton = () => {
+        const themeColor = detectThemeColor();
+
         const container = document.createElement('div');
         container.id = 'x-buster-controls';
         container.style.cssText = `
             position: fixed;
             bottom: 60px;
             right: 20px;
-            background-color: rgba(29, 155, 240, 0.9);
+            background-color: ${themeColor.replace('rgb', 'rgba').replace(')', ', 0.9)')};
             border-radius: 30px;
             padding: 10px 15px;
             display: flex;
