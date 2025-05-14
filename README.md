@@ -37,18 +37,26 @@ const config = {
 Once installed and enabled, the script will automatically:
 1. Detect tweets marked as ads in your Twitter/X feed.
 2. Block the accounts posting these ads.
-3. Auto-scroll through your feed (if enabled)
+3. Auto-scroll through your feed (if enabled).
 
 ### Auto-Scroll Controls
 - Click the **Auto-scroll** toggle button in the bottom-right corner to enable/disable scrolling
+- Next to the toggle, use the **Reset** dropdown to select how scrolling should reset when stuck:
+  - `home`: Click the Home button and return to the top of the feed (default)
+  - `refresh`: Refresh the page to reset scrolling
+  - `none`: Do not reset scrolling at all
 - Adjust scroll settings in the config:
   - `enabled`: Turn auto-scroll on/off by default
   - `speed`: The number of pixels to scroll per tick (higher = faster)
-  - `resetMethod`: Choose how to reset scrolling when stuck
-     - `home`: Click the Home button and return to the top of the feed (default)
-     - `refresh`: Refresh the page to reset scrolling
-     - `none`: Do not reset scrolling
+  - `resetMethod`: Default reset method for scrolling
   - `checkInterval`: How often to check if scrolling is stuck (in milliseconds)
   - `stuckThreshold`: Consider scrolling stuck if moved less than this many pixels since the last check
 
-The script runs in the background and requires no manual intervention. It's that easy! 
+### Theme Integration & Settings Persistence
+- The control panel automatically adapts to your Twitter/X theme color for a seamless experience
+- X-Buster detects your theme color by analyzing color patterns in the Twitter/X interface
+- All your preferences (auto-scroll state and reset method) are saved to your browser's localStorage
+- Your settings will persist across page refreshes and browser sessions
+- No need to reconfigure each time you visit Twitter/X
+
+The script runs in the background and requires no manual intervention. It's that easy!
